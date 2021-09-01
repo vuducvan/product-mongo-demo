@@ -134,6 +134,11 @@ export class ProductDto {
   price: number;
 
   @ApiProperty({
+    type: [String],
+  })
+  tag: string[];
+
+  @ApiProperty({
     type: Number,
   })
   amount: number;

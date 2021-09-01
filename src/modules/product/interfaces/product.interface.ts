@@ -47,6 +47,8 @@ export interface IProduct {
 
   price: number;
 
+  tag: string[];
+
   amount: number;
 
   isDelete: number;

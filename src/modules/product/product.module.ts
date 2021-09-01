@@ -16,6 +16,7 @@ import {
   CheckCanDelete,
   CheckCanRead,
   CheckCanUpdate,
+  CheckUniqueTag,
 } from '../../middlewares/checkRole';
 import { UsersModule } from '../users/users.module';
 
@@ -35,7 +36,7 @@ import { UsersModule } from '../users/users.module';
 export class ProductModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(CheckCanCreate)
+      .apply(CheckCanCreate, CheckUniqueTag)
       .forRoutes({ path: 'products', method: RequestMethod.POST });
     consumer
       .apply(CheckCanRead)

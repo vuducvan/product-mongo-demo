@@ -42,6 +42,7 @@ const ProductSchema = new Schema({
   shape: ShapeSchema,
   origin: String,
   price: Number,
+  tag: [String],
   amount: Number,
   isDelete: Number,
   createdAt: Date,

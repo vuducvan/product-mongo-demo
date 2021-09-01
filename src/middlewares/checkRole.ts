@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import {
-  Injectable,
   NestMiddleware,
   HttpException,
   HttpStatus,
+  Injectable,
+  BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from '../modules/users/users.service';
 import { IToken } from './interfaces/token.interface';
@@ -35,7 +36,7 @@ export class CheckCanCreate implements NestMiddleware {
       if (!check) {
         throw new HttpException(
           {
-            status: HttpStatus.FORBIDDEN,
+            statusCode: HttpStatus.FORBIDDEN,
             error: 'Permission deny',
           },
           403,
@@ -76,7 +77,7 @@ export class CheckCanRead implements NestMiddleware {
       if (!check) {
         throw new HttpException(
           {
-            status: HttpStatus.FORBIDDEN,
+            statusCode: HttpStatus.FORBIDDEN,
             error: 'Permission deny',
           },
           403,
@@ -117,7 +118,7 @@ export class CheckCanUpdate implements NestMiddleware {
       if (!check) {
         throw new HttpException(
           {
-            status: HttpStatus.FORBIDDEN,
+            statusCode: HttpStatus.FORBIDDEN,
             error: 'Permission deny',
           },
           403,
@@ -158,7 +159,7 @@ export class CheckCanDelete implements NestMiddleware {
       if (!check) {
         throw new HttpException(
           {
-            status: HttpStatus.FORBIDDEN,
+            statusCode: HttpStatus.FORBIDDEN,
             error: 'Permission deny',
           },
           403,
@@ -166,6 +167,29 @@ export class CheckCanDelete implements NestMiddleware {
       } else {
         // req.userId = payload.userId; //return a userId to response to update createBy, updateBy fields
         next();
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+}
+
+@Injectable()
+export class CheckUniqueTag implements NestMiddleware {
+  async use(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { tag } = req.body;
+      const checkTag = [...new Set(tag)];
+      console.log(tag);
+      console.log(checkTag);
+      console.log();
+      if (tag.every((v, i) => v === checkTag[i])) {
+        next();
+      } else {
+        throw new BadRequestException({
+          statusCode: HttpStatus.BAD_REQUEST,
+          error: 'Tag is not unique',
+        });
       }
     } catch (error) {
       throw error;
